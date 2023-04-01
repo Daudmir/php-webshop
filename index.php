@@ -1,3 +1,9 @@
+<?php
+session_start();
+
+// your code here
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,28 +14,164 @@
     <link href="https://unpkg.com/tailwindcss@%5E1.0/dist/tailwind.min.css" rel="stylesheet">
     <title>Document</title>
 </head>
-<body>
-    <section>
-        <div>
-            <?php 
+<body class="bg-gray-100">
+<nav class="bg-gray-800">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+        <div class="relative flex items-center justify-between h-16">
+            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                <!-- Mobile menu button -->
+                <button type="button"
+                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                    aria-controls="mobile-menu" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <!-- Icon when menu is closed. -->
+                    <!--
+                      Heroicon name: outline/menu
 
-            $database = 'webshop_db';
-            $servername = 'localhost';
-            $username = 'root';
-            $password = '';
+                      Menu open: "hidden", Menu closed: "block"
+                    -->
+                    <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <!-- Icon when menu is open. -->
+                    <!--
+                      Heroicon name: outline/x
 
-            $connection = new mysqli($servername, $username, $password, $database);
+                      Menu open: "block", Menu closed: "hidden"
+                    -->
+                    <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                <div class="flex-shrink-0">
+                    <a href="index.php" class="text-white text-xl font-bold">Webshop</a>
+                </div>
+                <div class="hidden sm:block sm:ml-6">
+                    <div class="flex space-x-4">
+                        <a href="index.php" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md
+                        font-medium">Home</a>
+                        <a href="products.php"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md
+                        font-medium">Products</a>
+                        <?php if(!isset($_SESSION['email'])): ?>
+                        <a href="register.html"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md
+                        font-medium">Sign up</a>
+                        <a href="login.html"
+                            class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md
+                        font-medium">Log in</a>
+                        <?php endif; ?>
+                        <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] == true): ?>
+                          <a href="administrator.php"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md
+                        font-medium">Admin</a>
+                        <?php endif; ?>
+                        <?php if(isset($_SESSION['email'])): ?>
+                          <form action="logout.php" method="post" class="inline-block" name="logoutForm">
+    <button type="submit" name="logout" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md font-medium">Log out</button>
+</form>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </nav>
 
-            $sql = "SELECT * FROM products";
-            $result = $connection->query($sql);
 
-            while($row = $result->fetch_assoc()){
-                echo "<p>$row[id]</p> <p>$row[product_name]</p> <p>$row[product_price]</p> <p>$row[product_desc]</p> <p>$row[product_image]</p>
-                <button href='/webshop-php/edit-product.php?id=$row[id]' class='bg-red-500'>Edit</button>
-                <button href='/webshop-php/remove-product.php?id=$row[id]' class='bg-red-500'>Remove</button>";
-            }
-            ?>
+    <!-- Hero Section -->
+    <section class="bg-gray-800 text-gray-100 py-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-4xl font-bold leading-tight">Welcome to the Web Shop</h1>
+            <p class="mt-4 text-xl">Discover our wide range of products at great prices.</p>
+            <a href="#products" class="inline-block mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded">Shop now</a>
         </div>
     </section>
+
+    <!-- Products Section -->
+    <section id="products" class="max-w-6xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold text-gray-900 text-center mt-12 mb-20">Featured Products</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <?php 
+        $servername = 'localhost';
+        $username = 'root';
+        $password = '';
+        $database = 'webshop_db';
+
+        $connection = new mysqli($servername, $username, $password, $database);
+
+        $sql = "SELECT * FROM products WHERE product_category = 'Sneakers' LIMIT 3";
+        $result = $connection->query($sql);
+
+        while($row = $result->fetch_assoc()){
+            echo "
+            <div class='bg-white shadow-md rounded-lg p-6'>
+                <img src='$row[product_image]' class='w-full h-62 object-cover object-center rounded-md mb-4'>
+                <h2 class='text-lg font-medium text-gray-900 mb-2'>$row[product_name]</h2>
+                <p class='text-gray-600 mb-4'>$row[product_desc]</p>
+                <p class='text-gray-900 font-bold text-lg mb-2'>$$row[product_price]</p>
+                <a href='#' class='bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded'>Add to cart</a>
+            </div>
+            ";
+        }
+        ?>
+    </div>
+</section>
+
+<footer class="bg-white dark:bg-gray-800 mt-20">
+  <div class="mx-auto w-full container p-4 sm:p-6">
+    <div class="md:flex md:justify-between">
+      <div class="mb-6 md:mb-0">
+        <a href="index.php" class="flex items-center">
+          <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Webshop</span>
+        </a>
+      </div>
+      <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
+        <div>
+          <ul class="text-gray-600 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="#" class="hover:underline">Home</a>
+            </li>
+            <li class="mb-4">
+              <a href="products.php" class="hover:underline">Products</a>
+            </li>
+            <li>
+              <a href="login.html" class="hover:underline">Login</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <ul class="text-gray-600 dark:text-gray-400">
+          <li class="mb-4">
+              <a href="register.html" class="hover:underline ">Signup</a>
+            </li>
+            <li class="mb-4">
+              <?php if(isset($_SESSION['admin']) && $_SESSION['admin'] == true): ?>
+                            <a href="administrator.php"
+                                class="hover:underline ">Admin</a>
+                          <?php endif; ?>
+            </li>
+
+            <li>
+              <?php if(isset($_SESSION['email'])): ?>
+                            <form action="logout.php" method="post" class="inline-block" name="logoutForm">
+                              <button type="submit" name="logout" class="hover:underline">Log out</button>
+                            </form>
+              <?php endif; ?>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    
 </body>
 </html>
