@@ -1,0 +1,75 @@
+#menu-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    background-color: #333333;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#menu {
+    position: fixed;
+    top: 20px;
+    right: -250px;
+    height: 100%;
+    width: 250px;
+    background-color: #3e3d3d;
+    z-index: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+#menu.active {
+    right: 0;
+}
+
+#menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#menu ul li {
+    position: relative;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#menu ul li:last-child {
+    border-bottom: none;
+}
+
+#menu ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Submenu */
+#menu ul ul {
+    position: absolute;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    background-color: #3e3d3d;
+    z-index: 2;
+    opacity: 0;
+    visibility: hidden;
+}
+
+#menu ul ul li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#menu ul ul li:last-child {
+    border-bottom: none;
+}
+
+#menu ul li:hover > ul {
+    right: 100%;
+    opacity: 1;
+    visibility: visible;
+}
